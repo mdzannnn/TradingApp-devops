@@ -1,10 +1,10 @@
-// --- APP STATE ---
+// APP STATE
 const API_URL = 'https://open.er-api.com/v6/latest/USD';
 let currentRates = { "USD":1, "SGD":1.35, "EUR":0.92, "JPY":150.2, "MYR":4.7 };
 let trades = JSON.parse(localStorage.getItem('trade_journal')) || [];
-let viewDate = new Date(2026, new Date().getMonth(), 1); // Start at current month, 2026
+let viewDate = new Date(2026, new Date().getMonth(), 1);
 
-// --- INIT ---
+// INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
     renderCalendar(); 
     updateStats();
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch(e) { console.log("Offline mode"); }
 });
 
-// --- CONVERTER LOGIC ---
+// LOGIC
 function runQuickConvert() {
     const amt = parseFloat(document.getElementById('qc-amount').value);
     const from = document.getElementById('qc-from').value;
@@ -28,7 +28,6 @@ function runQuickConvert() {
     document.getElementById('qc-result').innerText = `${to} ${res.toFixed(2)}`;
 }
 
-// --- CALENDAR LOGIC ---
 function changeMonth(step) {
     const next = new Date(viewDate.getFullYear(), viewDate.getMonth() + step, 1);
     if(next.getFullYear() !== 2026) return alert("Journal restricted to 2026.");
@@ -63,15 +62,17 @@ function renderCalendar() {
         dayDiv.innerHTML = html;
         dayDiv.onclick = () => openModal(dateStr);
         
+        // Highlight Today
         const now = new Date();
         if(year === now.getFullYear() && month === now.getMonth() && i === now.getDate()) {
             dayDiv.classList.add('today');
         }
+        
         grid.appendChild(dayDiv);
     }
 }
 
-// --- MODAL LOGIC ---
+// MODAL
 const modal = document.getElementById('journal-modal');
 function openModal(date) {
     modal.classList.add('active');
@@ -101,5 +102,7 @@ function updateStats() {
     document.getElementById('best-trade').innerText = `$${best.toFixed(2)}`;
 }
 
-// For automated testing to pick up functions
-if (typeof module !== 'undefined') { module.exports = { runQuickConvert }; }
+// Export for Unit Tests
+if (typeof module !== 'undefined') {
+    module.exports = { runQuickConvert };
+}
